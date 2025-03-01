@@ -1,0 +1,76 @@
+{
+    "name": "@nsea/starter",
+    "version": "0.0.0",
+    "description": "",
+    "keywords": [
+        "lib",
+        "xmind",
+        "praser"
+    ],
+    "publishConfig": {
+        "access": "public",
+        "registry": "https://registry.npmjs.org/"
+    },
+    "packageManager": "pnpm@10.2.1",
+    "bin": {
+        "starter": "bin/starter.js"
+    },
+    "main": "dist/index.js",
+    "exports": {
+        ".": {
+            "import": "./dist/index.js",
+            "require": "./dist/index.cjs"
+        }
+    },
+    "homepage": "https://github.com/NorthSeacoder/extensions/blob/main/libs/starter/README.md",
+    "bugs": {
+        "url": "https://github.com/NorthSeacoder/extensions/issues"
+    },
+    "author": "NorthSeacoder",
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/NorthSeacoder/extensions.git"
+    },
+    "license": "MIT",
+    "files": [
+        "dist",
+        "bin"
+    ],
+    "type": "module",
+    "devDependencies": {
+        "@antfu/ni": "^23.3.1",
+        "@arethetypeswrong/cli": "^0.15.4",
+        "@types/node": "^22.13.8",
+        "bumpp": "^10.0.3",
+        "commitizen": "^4.3.1",
+        "cz-conventional-changelog": "^3.3.0",
+        "rimraf": "^6.0.1",
+        "tsup": "^8.2.4",
+        "typescript": "^5.5.4",
+        "vitest": "^2.0.5"
+    },
+    "scripts": {
+        "cz": "git add . && git-cz",
+        "clean": "rimraf dist stats.html",
+        "start": "esno src/cli/run.ts",
+        "build": "nr clean && tsup",
+        "analyze": "nr clean && tsup --metafile &&esbuild-visualizer --metadata ./dist/metafile-*.json --open",
+        "lint": "tsc",
+        "test": "vitest run",
+        "format": "prettier --write .",
+        "check-format": "prettier --check .",
+        "check-exports": "attw --pack .",
+        "typecheck": "tsc --noEmit",
+        "ci": "nr build && nr check-exports && nr lint && nr typecheck && nr test",
+        "prepublishOnly": "npm run ci",
+        "release": "pwd && bumpp && npm publish"
+    },
+    "dependencies": {
+        "cac": "^6.7.14"
+    },
+    "config": {
+        "commitizen": {
+            "path": "cz-conventional-changelog"
+        }
+    }
+}
