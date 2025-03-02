@@ -63,7 +63,7 @@ test('正确解析 tsconfig 路径别名', async () => {
         tsConfig: '/test/tsconfig.json'
     });
 
-    expect(dependencies).toContain('/test/src/components/Button.ts');
+    expect(dependencies).toContain('src/components/Button.ts');
 });
 
 test('正确解析 webpack 路径别名', async () => {
@@ -90,7 +90,7 @@ test('正确解析 webpack 路径别名', async () => {
         webpackConfig: '/test/webpack.config.js'
     });
 
-    expect(dependencies).toContain('/test/src/components/Button.ts');
+    expect(dependencies).toContain('src/components/Button.ts');
 });
 
 test('递归扫描目录并构建依赖图', async () => {
