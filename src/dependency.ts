@@ -2,9 +2,11 @@ import * as fs from 'fs';
 import * as fsp from 'fs/promises';
 import * as path from 'path';
 import {parse} from '@babel/parser';
-import traverse from '@babel/traverse';
+import _traverse from '@babel/traverse';
 import {createMatchPath} from 'tsconfig-paths';
 import type {Options, DependencyGraph, WebpackResolveConfig} from './types';
+
+const traverse = (_traverse as any).default ?? _traverse;
 
 export async function getDependencies(filePath: string, options: Options): Promise<string[]> {
     const {fileExtensions = ['js', 'jsx', 'ts', 'tsx'], detectiveOptions = {}, tsConfig, webpackConfig} = options;
@@ -48,24 +50,27 @@ export async function getDependencies(filePath: string, options: Options): Promi
             console.error('Failed to load webpack config:', error);
         }
     }
-
-    traverse(ast, {
-        ImportDeclaration({node}) {
-            const source = node.source.value;
-            if (detectiveOptions.ts?.skipTypeImports && node.importKind === 'type') return;
-            handleDependency(source, filePath, dependencies, options, tsMatchPath, webpackResolveConfig);
-        },
-        CallExpression({node}) {
-            if (
-                node.callee.type === 'Identifier' &&
-                node.callee.name === 'require' &&
-                node.arguments[0]?.type === 'StringLiteral'
-            ) {
-                const source = node.arguments[0].value;
+    try {
+        traverse(ast, {
+            ImportDeclaration({node}: any) {
+                const source = node.source.value;
+                if (detectiveOptions.ts?.skipTypeImports && node.importKind === 'type') return;
                 handleDependency(source, filePath, dependencies, options, tsMatchPath, webpackResolveConfig);
+            },
+            CallExpression({node}: any) {
+                if (
+                    node.callee.type === 'Identifier' &&
+                    node.callee.name === 'require' &&
+                    node.arguments[0]?.type === 'StringLiteral'
+                ) {
+                    const source = node.arguments[0].value;
+                    handleDependency(source, filePath, dependencies, options, tsMatchPath, webpackResolveConfig);
+                }
             }
-        }
-    });
+        });
+    } catch (error) {
+        throw error;
+    }
 
     return Array.from(dependencies);
 }
@@ -98,6 +103,7 @@ function handleDependency(
                 undefined,
                 fileExtensions.map((ext) => `.${ext}`)
             );
+
         } else {
             // 支持 webpack 别名的部分匹配
             for (const alias in webpackAlias) {
@@ -111,8 +117,13 @@ function handleDependency(
         }
         if (resolvedPath) {
             const relativePath = path.relative(baseDir, resolvedPath);
-            if (!excludeRegExp.some((regex) => regex.test(relativePath))) {
-                dependencies.add(resolvedPath);
+            let finalPath = relativePath;
+            //判断 finalPath 有fileExtensions
+            if (![...webpackExtensions,...fileExtensions].some((ext) => finalPath.endsWith(ext))) {
+                finalPath = resolveFileExtension(resolvedPath, fileExtensions) || '';
+            }
+            if (!excludeRegExp.some((regex) => regex.test(finalPath))) {
+                dependencies.add(finalPath);
             }
         }
         return;

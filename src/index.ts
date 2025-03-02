@@ -33,7 +33,12 @@ export default async function depseeker(filePath: string, options: Options = {})
     baseDir: path.dirname(filePath),
     ...options,
   };
-
-  const { graph, files } = await buildDependencyGraph(filePath, defaultOptions);
-  return new DepSeeker(files, graph);
+  try {
+    const { graph, files } = await buildDependencyGraph(filePath, defaultOptions);
+    return new DepSeeker(files, graph);
+    
+  } catch (error) {
+    throw error
+  }
 }
+export type { DepSeeker }
