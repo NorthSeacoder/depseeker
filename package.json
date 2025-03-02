@@ -30,7 +30,7 @@
         "type": "git",
         "url": "git+https://github.com/NorthSeacoder/depseeker.git"
     },
-    "license": "MIT",
+    "license": "WTFPL",
     "files": [
         "dist",
         "bin"

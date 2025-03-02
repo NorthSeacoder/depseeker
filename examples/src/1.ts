@@ -1,6 +1,7 @@
 export function demo() {
-    console.log(111);
+  console.log(111);
 }
-const a = ()=> {
-    const b = 1;
+const a = function () {
+  const b = 1;
 };
+const label = '1.ts 的中文';

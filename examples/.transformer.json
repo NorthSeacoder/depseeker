@@ -1,0 +1,6 @@
+{
+    "rules": {
+      "plugins": ["@babel/plugin-transform-arrow-functions"],
+      "presets": []
+    }
+  }

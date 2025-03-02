@@ -8,5 +8,10 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/core": "^7.26.9",
+    "@babel/plugin-transform-arrow-functions": "^7.25.9",
+    "@codetransformer/find-chinese": "^0.0.1"
+  }
 }
