@@ -23,5 +23,5 @@
         "noEmit": true,
         "forceConsistentCasingInFileNames": true
     },
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "dist", "examples"]
 }
