@@ -1,5 +1,5 @@
 {
-    "name": "@nsea/starter",
+    "name": "@nsea/depseeker",
     "version": "0.0.0",
     "description": "",
     "keywords": [
@@ -12,9 +12,6 @@
         "registry": "https://registry.npmjs.org/"
     },
     "packageManager": "pnpm@10.2.1",
-    "bin": {
-        "starter": "bin/starter.js"
-    },
     "main": "dist/index.js",
     "exports": {
         ".": {
@@ -22,14 +19,14 @@
             "require": "./dist/index.cjs"
         }
     },
-    "homepage": "https://github.com/NorthSeacoder/extensions/blob/main/libs/starter/README.md",
+    "homepage": "https://github.com/NorthSeacoder/depseeker/README.md",
     "bugs": {
-        "url": "https://github.com/NorthSeacoder/extensions/issues"
+        "url": "https://github.com/NorthSeacoder/depseeker/issues"
     },
     "author": "NorthSeacoder",
     "repository": {
         "type": "git",
-        "url": "git+https://github.com/NorthSeacoder/extensions.git"
+        "url": "git+https://github.com/NorthSeacoder/depseeker.git"
     },
     "license": "MIT",
     "files": [
@@ -40,14 +37,21 @@
     "devDependencies": {
         "@antfu/ni": "^23.3.1",
         "@arethetypeswrong/cli": "^0.15.4",
+        "@types/babel__traverse": "^7.20.6",
         "@types/node": "^22.13.8",
         "bumpp": "^10.0.3",
         "commitizen": "^4.3.1",
         "cz-conventional-changelog": "^3.3.0",
         "rimraf": "^6.0.1",
+        "ts-node": "^10.9.2",
         "tsup": "^8.2.4",
         "typescript": "^5.5.4",
         "vitest": "^2.0.5"
+    },
+    "dependencies": {
+        "@babel/parser": "^7.23.0",
+        "@babel/traverse": "^7.23.0",
+        "tsconfig-paths": "^4.2.0"
     },
     "scripts": {
         "cz": "git add . && git-cz",
@@ -64,9 +68,6 @@
         "ci": "nr build && nr check-exports && nr lint && nr typecheck && nr test",
         "prepublishOnly": "npm run ci",
         "release": "pwd && bumpp && npm publish"
-    },
-    "dependencies": {
-        "cac": "^6.7.14"
     },
     "config": {
         "commitizen": {

@@ -1,0 +1,28 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "tsup: watch",
+            "type": "shell",
+            "command": "npx tsup --watch",
+            "isBackground": true,
+            "problemMatcher": [
+                {
+                    "base": "$tsc-watch",
+                    "background": {
+                        "activeOnStart": true,
+                        "beginsPattern": "Build start",
+                        "endsPattern": "Build success"
+                    }
+                }
+            ],
+            "runOptions": {"runOn": "folderOpen"}
+        },
+        {
+            "label": "tsup: build",
+            "type": "shell",
+            "command": "npx tsup --sourcemap",
+            "problemMatcher": "$tsc"
+        }
+    ]
+}
