@@ -1,56 +1,77 @@
-# Starter Template for NPM Libraries
+# DepSeeker - 项目依赖分析工具
 
-这是一个用于创建新NPM库的起始模板，包含常用配置和工具函数。
+这是一个用于分析项目文件依赖关系的工具库，可以构建项目的依赖关系图，支持TypeScript和Webpack配置。
 
-This is a starter template for creating new NPM libraries, containing common configurations and utility functions.
+This is a tool library for analyzing project file dependencies, capable of building dependency graphs for projects, with support for TypeScript and Webpack configurations.
 
 ## 技术栈 / Tech Stack
 
 - TypeScript
+- Babel Parser (用于代码解析 / for code parsing)
 - Vitest (用于测试 / for testing)
 - tsup (用于构建 / for building)
-- ESLint (用于代码规范 / for code linting)
-- CAC (用于命令行解析 / for command-line parsing)
+- tsconfig-paths (用于解析TypeScript路径别名 / for resolving TypeScript path aliases)
 
 ## 特性 / Features
 
-- 支持TypeScript
-- 支持注册命令行工具 (bin)
-- 内置测试配置
-- 支持NPM发布
-- 包含基本的工具函数
-- 支持多种输出格式 (CJS, ESM)
-- 包含错误处理和参数解析
+- 支持分析JavaScript和TypeScript项目的依赖关系
+- 支持解析相对路径导入
+- 支持TypeScript路径别名（通过tsconfig.json）
+- 支持Webpack别名配置
+- 可自定义文件扩展名和排除规则
+- 提供依赖关系图的对象表示
 
-- TypeScript support
-- CLI tool registration support (bin)
-- Built-in test configuration
-- NPM publishing support
-- Basic utility functions included
-- Support for multiple output formats (CJS, ESM)
-- Includes error handling and argument parsing
+- Supports dependency analysis for JavaScript and TypeScript projects
+- Supports relative path imports resolution
+- Supports TypeScript path aliases (via tsconfig.json)
+- Supports Webpack alias configurations
+- Customizable file extensions and exclusion rules
+- Provides object representation of dependency graphs
 
 ## 使用方法 / Usage
 
-1. clone 这个项目 或 use this template / Clone this project or use this template
-2. 修改 `package.json` 中的项目信息 / Modify project info in `package.json`
-3. 在 `src` 目录下开发你的库 / Develop your library in the `src` directory
-4. 使用 `npm run build` 构建项目 / Build the project using `npm run build`
-5. 使用 `npm run release` 发布新版本 / Use `npm run release` to publish new versions
+1. 安装依赖 / Install the package
+   ```bash
+   npm install @nsea/depseeker
+   # 或使用 yarn / or using yarn
+   yarn add @nsea/depseeker
+   # 或使用 pnpm / or using pnpm
+   pnpm add @nsea/depseeker
+   ```
+
+2. 在代码中使用 / Use in your code
+   ```typescript
+   import depseeker from '@nsea/depseeker';
+   
+   async function analyzeDependencies() {
+     const entryFile = '/path/to/your/entry/file.ts';
+     const options = {
+       includeNpm: false,
+       fileExtensions: ['js', 'jsx', 'ts', 'tsx'],
+       excludeRegExp: [/\.d\.ts$/, /node_modules/, /dist/],
+       tsConfig: '/path/to/tsconfig.json',  // 可选 / optional
+       webpackConfig: '/path/to/webpack.config.js'  // 可选 / optional
+     };
+     
+     const result = await depseeker(entryFile, options);
+     console.log('依赖关系图 / Dependency Graph:', result.obj());
+     console.log('文件列表 / File List:', result.getFiles());
+   }
+   
+   analyzeDependencies().catch(console.error);
+   ```
 
 ## 开发 / Development
 
 主要开发文件：
 - `src/index.ts`: 库的主入口
-- `src/cli/index.ts`: CLI工具的入口
+- `src/dependency.ts`: 依赖分析的核心逻辑
 - `src/types/`: 类型定义
-- `src/utils.ts`: 工具函数
 
 Main development files:
 - `src/index.ts`: Main entry of the library
-- `src/cli/index.ts`: Entry for CLI tools
+- `src/dependency.ts`: Core logic for dependency analysis
 - `src/types/`: Type definitions
-- `src/utils.ts`: Utility functions
 
 ## 测试 / Testing
 
@@ -64,58 +85,39 @@ Run `npm test` to execute tests. Test files should be placed in the `src` direct
 
 Use `npm run build` to build the project. This will generate output files in both CJS and ESM formats.
 
-## 发布 / Publishing
+## 配置选项 / Configuration Options
 
-1. 在根目录执行发布脚本 / Run the release script in the root directory: `npm run release`
+在调用 `depseeker` 函数时，可以传入以下选项：
 
-注意：发布脚本会自动处理版本更新、构建和发布过程。由于已设置 `publishConfig`，无需手动设置 npm 源。
+- `includeNpm`: 是否包含npm包依赖（默认：false）
+- `fileExtensions`: 要分析的文件扩展名数组（默认：['js', 'jsx', 'ts', 'tsx']）
+- `excludeRegExp`: 排除文件的正则表达式数组
+- `detectiveOptions`: 代码解析选项
+- `baseDir`: 基础目录路径
+- `tsConfig`: TypeScript配置文件路径
+- `webpackConfig`: Webpack配置文件路径
 
-Note: The release script will automatically handle version updating, building, and publishing processes. As `publishConfig` is already set, there's no need to manually set the npm registry.
+When calling the `depseeker` function, you can pass the following options:
 
-注意：发布前请确保已经登录到npm。
-
-Note: Make sure you're logged in to npm before publishing.
-
-## 命令行工具 / CLI Tool
-
-此模板包含一个基本的命令行工具结构。主要文件：
-- `bin/starter.js`: CLI入口点
-- `src/cli/index.ts`: CLI主逻辑
-- `src/cli/parse-args.ts`: 参数解析
-
-This template includes a basic CLI tool structure. Main files:
-- `bin/starter.js`: CLI entry point
-- `src/cli/index.ts`: Main CLI logic
-- `src/cli/parse-args.ts`: Argument parsing
-
-## 配置文件 / Configuration Files
-
-- `tsconfig.json`: TypeScript配置
-- `tsup.config.ts`: 构建配置
-
-- `tsconfig.json`: TypeScript configuration
-- `tsup.config.ts`: Build configuration
-
-## 脚本说明 / Script Descriptions
-
-- `build`: 构建项目 / Build the project
-- `lint`: 运行TypeScript类型检查 / Run TypeScript type checking
-- `test`: 运行测试 / Run tests
-- `format`: 格式化代码 / Format code
-- `check-format`: 检查代码格式 / Check code formatting
-- `check-exports`: 检查导出 / Check exports
-- `ci`: 运行CI检查 / Run CI checks
-- `release`: 发布新版本 / Release a new version
+- `includeNpm`: Whether to include npm package dependencies (default: false)
+- `fileExtensions`: Array of file extensions to analyze (default: ['js', 'jsx', 'ts', 'tsx'])
+- `excludeRegExp`: Array of regular expressions to exclude files
+- `detectiveOptions`: Code parsing options
+- `baseDir`: Base directory path
+- `tsConfig`: Path to TypeScript configuration file
+- `webpackConfig`: Path to Webpack configuration file
 
 ## 依赖说明 / Dependencies
 
 主要依赖包括：
-- `cac`: 命令行参数解析
-- 其他开发依赖参见根目录 `package.json`
+- `@babel/parser`: 用于解析JavaScript/TypeScript代码
+- `@babel/traverse`: 用于遍历AST
+- `tsconfig-paths`: 用于解析TypeScript路径别名
 
 Main dependencies include:
-- `cac`: Command-line argument parsing
-- See root `package.json` for other dev dependencies
+- `@babel/parser`: For parsing JavaScript/TypeScript code
+- `@babel/traverse`: For traversing AST
+- `tsconfig-paths`: For resolving TypeScript path aliases
 
 ## 许可证 / License
 
