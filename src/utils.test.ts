@@ -1,6 +1,7 @@
-import { hello } from './utils.js'
-import { test, expect } from 'vitest'
-
-test('hello', () => {
-  expect(hello('world')).toBe('Hello, world!')
-})
+import {test, expect} from 'vitest';
+import {resolveTsConfig} from './utils';
+test('resolveTsConfig', async () => {
+    const tsConfig = await resolveTsConfig('./tsconfig.json');
+    expect(tsConfig).toBeDefined();
+    expect(tsConfig.compilerOptions).toBeDefined();
+});

@@ -5,6 +5,7 @@ import {parse} from '@babel/parser';
 import _traverse from '@babel/traverse';
 import {createMatchPath} from 'tsconfig-paths';
 import type {Options, DependencyGraph, WebpackResolveConfig} from './types';
+import {resolveTsConfig} from './utils';
 
 const traverse = (_traverse as any).default ?? _traverse;
 
@@ -31,8 +32,8 @@ export async function getDependencies(filePath: string, options: Options): Promi
 
     // TS 配置支持
     if (tsConfig && fs.existsSync(tsConfig)) {
-        const tsConfigContent = JSON.parse(await fsp.readFile(tsConfig, 'utf8'));
-        const baseUrl = path.resolve(options.baseDir || '', tsConfigContent.compilerOptions?.baseUrl || '.');
+        const tsConfigContent = await resolveTsConfig(tsConfig);
+        const baseUrl = path.resolve(options.baseDir || '');
         const paths = tsConfigContent.compilerOptions?.paths || {};
         tsMatchPath = createMatchPath(baseUrl, paths);
     }
