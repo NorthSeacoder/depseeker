@@ -7,9 +7,10 @@ export default defineConfig({
   dts: true,
   outDir: 'dist',
   clean: true,
+  shims: true,
+  // cjsInterop: true,
   minify: true,
   treeshake: true,
-  cjsInterop: true,
   noExternal:['@babel/parser','@babel/traverse','tsconfig-paths'],
   // metafile: true,
 })
