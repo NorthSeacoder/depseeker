@@ -93,4 +93,3 @@ export default async function depseeker(filePath: string, options: Options = {})
     }
 }
 export type {DepSeekerResult};
-console.log('VS Code Extension Host Node.js version:', process.version)

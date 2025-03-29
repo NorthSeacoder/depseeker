@@ -8,7 +8,7 @@ export default defineConfig({
   outDir: 'dist',
   clean: true,
   shims: true,
-  // cjsInterop: true,
+  cjsInterop: true,
   minify: true,
   treeshake: true,
   noExternal:['@babel/parser','@babel/traverse','tsconfig-paths'],

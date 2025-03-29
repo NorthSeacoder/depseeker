@@ -20,10 +20,10 @@ const traverse = (_traverse as any).default ?? _traverse;
  */
 async function getDirectDependencies(
     absoluteFilePath: string,
-    options: Required<Options>, // 使用 Required 确保所有选项都有默认值
+    options: Omit<Required<Options>, 'tsConfig'> & { tsConfig?: string }, // 修改 options 类型
     tsMatchPath?: MatchPath
 ): Promise<string[]> {
-    const {fileExtensions, detectiveOptions, baseDir, includeNpm, excludeRegExp} = options;
+    const {fileExtensions, detectiveOptions, baseDir, excludeRegExp} = options;
 
     const ext = path.extname(absoluteFilePath).slice(1);
     // 提前检查扩展名，避免无效读取
@@ -66,19 +66,19 @@ async function getDirectDependencies(
                 if (node.source && node.source.value) {
                     // 跳过 type imports (如果配置了)
                     if (detectiveOptions.ts?.skipTypeImports && node.importKind === 'type') return;
-                    handleSource(node.source.value, currentDir, dependencies, options, tsMatchPath);
+                    handleSource(node.source.value, dependencies);
                 }
             },
             // ES Module Exports: export ... from '...'
             ExportNamedDeclaration({node}: any) {
                 if (node.source && node.source.value) {
-                    handleSource(node.source.value, currentDir, dependencies, options, tsMatchPath);
+                    handleSource(node.source.value, dependencies);
                 }
             },
             // ES Module Exports: export * from '...'
             ExportAllDeclaration({node}: any) {
                 if (node.source && node.source.value) {
-                    handleSource(node.source.value, currentDir, dependencies, options, tsMatchPath);
+                    handleSource(node.source.value, dependencies);
                 }
             },
             // CommonJS Requires & Dynamic Imports
@@ -90,7 +90,7 @@ async function getDirectDependencies(
                     node.arguments.length > 0 &&
                     node.arguments[0].type === 'StringLiteral'
                 ) {
-                    handleSource(node.arguments[0].value, currentDir, dependencies, options, tsMatchPath);
+                    handleSource(node.arguments[0].value, dependencies);
                 }
                 // import('...')
                 else if (
@@ -98,7 +98,7 @@ async function getDirectDependencies(
                     node.arguments.length > 0 &&
                     node.arguments[0].type === 'StringLiteral'
                 ) {
-                    handleSource(node.arguments[0].value, currentDir, dependencies, options, tsMatchPath);
+                    handleSource(node.arguments[0].value, dependencies);
                 }
                 // Potential require.resolve('...') - 通常不计入图谱，因为它不直接执行依赖
             }
@@ -136,10 +136,10 @@ async function getDirectDependencies(
 async function resolveDependencyPath(
     source: string,
     currentDir: string,
-    options: Required<Options>,
+    options: Omit<Required<Options>, 'tsConfig'> & { tsConfig?: string },
     tsMatchPath?: MatchPath
 ): Promise<string | null> {
-    const {includeNpm, baseDir, fileExtensions} = options;
+    const {includeNpm, fileExtensions} = options;
 
     // 1. 处理 npm 包 (如果 includeNpm 为 true 且不是相对/绝对路径)
     if (includeNpm && !source.startsWith('.') && !path.isAbsolute(source)) {
@@ -216,13 +216,7 @@ async function resolveDependencyPath(
 /**
  * 辅助函数，将源字符串添加到待解析集合中 (仅添加，解析在 resolveDependencyPath 中进行)
  */
-function handleSource(
-    source: string,
-    currentDir: string, // 不需要 currentDir 了，解析在 resolveDependencyPath 中处理
-    dependencies: Set<string>,
-    options: Required<Options>,
-    tsMatchPath?: MatchPath // tsMatchPath 也不需要在这里处理
-) {
+function handleSource(source: string,dependencies: Set<string>) {
     if (source) {
         dependencies.add(source); // 直接添加原始 source 字符串
     }
@@ -237,7 +231,7 @@ function handleSource(
  */
 export async function buildDependencyGraph(
     startPath: string,
-    options: Required<Options>
+    options: Omit<Required<Options>, 'tsConfig'> & { tsConfig?: string }
 ): Promise<{graph: DependencyGraph; files: string[]}> {
     const dependencyGraph: DependencyGraph = {};
     const visited = new Set<string>(); // 存储已访问文件的绝对路径

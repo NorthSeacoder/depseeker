@@ -20,7 +20,7 @@
             "require": "./dist/index.cjs"
         }
     },
-    "types": "dist/index.d.ts",
+    "types":"./dist/index.d.ts",
     "homepage": "https://github.com/NorthSeacoder/depseeker/README.md",
     "bugs": {
         "url": "https://github.com/NorthSeacoder/depseeker/issues"
