@@ -1,20 +1,15 @@
 {
-    "compilerOptions": {
-      "target": "esnext",
-      "module": "NodeNext",
-      "moduleResolution": "nodenext",
-      "lib": [
-        "esnext"
-      ],
-      "baseUrl": ".",
-      "strict": true,
-      "paths": {
-        "@/*": [
-          "src/*"
-        ]
-      }
-    },
-    "include": ["src/**/*", "*.ts"],
-    "exclude": ["node_modules"]
-  }
-  
+  "compilerOptions": {
+    "target": "esnext",
+    "module": "NodeNext",
+    "moduleResolution": "nodenext",
+    "lib": ["esnext"],
+    "baseUrl": ".",
+    "strict": true,
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  },
+  "include": ["src/**/*", "*.ts"],
+  "exclude": ["node_modules"]
+}
