@@ -1,8 +1,6 @@
 import { access, readFile, stat } from 'node:fs/promises';
 import path from 'node:path';
-import tsconfigPaths from 'tsconfig-paths';
-
-const { loadTsconfig } = tsconfigPaths;
+import { loadConfig } from 'tsconfig-paths';
 
 export interface TsConfigInfo {
   readonly absolutePath: string;
@@ -11,21 +9,15 @@ export interface TsConfigInfo {
 }
 
 export async function loadTsConfig(tsConfigPath: string): Promise<TsConfigInfo | null> {
-  const config = loadTsconfig(tsConfigPath);
-  if (!config) {
+  const result = loadConfig(tsConfigPath);
+  if (result.resultType === 'failed') {
     return null;
   }
 
-  const compilerOptions = config.compilerOptions ?? {};
-  const baseDir = path.dirname(tsConfigPath);
-  const absoluteBaseUrl = compilerOptions.baseUrl
-    ? path.resolve(baseDir, compilerOptions.baseUrl)
-    : baseDir;
-
   return {
-    absolutePath: tsConfigPath,
-    baseUrl: absoluteBaseUrl,
-    paths: compilerOptions.paths ?? {},
+    absolutePath: result.configFileAbsolutePath,
+    baseUrl: result.absoluteBaseUrl,
+    paths: result.paths ?? {},
   };
 }
 
