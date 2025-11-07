@@ -11,7 +11,7 @@ const options = {
   detectiveOptions: { ts: { skipTypeImports: true } },
   baseDir: basePath,
   tsConfig: path.join(basePath, 'tsconfig.json'),
-//   webpackConfig: path.join(basePath, 'webpack.config.js'),
+  //   webpackConfig: path.join(basePath, 'webpack.config.js'),
 };
 
 (async () => {
